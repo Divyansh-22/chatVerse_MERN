@@ -1,2 +1,2 @@
-.\chatVerse_backend\node_modules
-.\chatVerse_backend\.env
+chatVerse_backend/node_modules
+chatVerse_backend/.env
