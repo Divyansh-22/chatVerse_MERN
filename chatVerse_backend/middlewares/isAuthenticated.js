@@ -3,8 +3,7 @@ const user = require('../models/user.model.js');
 
 const Auth = async (req, res, next) => {
   try {
-    // let token = req.headers.authorization.split(' ')[0]; //when using browser this line 
-    let token = req.headers.authorization.split(' ')[1]; //when using postman this line
+    let token = req.headers.authorization.split(' ')[1]; //req.headers.authorization.split(' ')[0] = Bearer;
     // let token = req.cookies.userToken;
     if (token.length < 500) {
       const verifiedUser = jwt.verify(token, process.env.SECRET_KEY);

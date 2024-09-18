@@ -122,18 +122,18 @@ const googleAuth = async (req, res) => {
       audience: process.env.CLIENT_ID,
     });
     const { email_verified, email, name, picture } = verify.payload;
-    if (!email_verified) res.json({ message: 'Email Not Verified' , success: false});
-    const userExist = await user.findOne({ email }).select('-password');
+    if (!email_verified) return res.status(304).json({ message: 'Email Not Verified' , success: false});
+    const userExist = await User.findOne({ email }).select('-password');
     if (userExist) {
       res.cookie('userToken', tokenId, {
         httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000,
       });
-      res.status(200).json({ message: "Logged In Successfully", token: tokenId, user: userExist, success: true });
+      return res.status(201).json({ message: "Logged In Successfully", token: tokenId, user: userExist, success: true });
     } else {
       const password = email + process.env.CLIENT_ID;
       await User.create({ 
-        name: name,
+        fullName: name,
         profilePic: picture,
         password,
         email,
@@ -143,16 +143,15 @@ const googleAuth = async (req, res) => {
         httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000,
       });
-      return res.status(200)
-        .json({ message: 'User registered Successfully',success: true, token: tokenId });
+      return res.status(201).json({ message: 'User registered Successfully',success: true, token: tokenId });
     }
   } catch (error) {
-    res.status(500).json({
+    console.log('Error in googleAuth backend ' + error);
+    return res.status(500).json({
       message: "Internal Server Error",
       error: error,
       success: true 
     });
-    console.log('Error in googleAuth backend' + error);
   }
 };
 
